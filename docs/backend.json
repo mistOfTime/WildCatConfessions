@@ -1,0 +1,54 @@
+
+{
+  "entities": {
+    "Confession": {
+      "title": "Confession",
+      "description": "An anonymous campus confession.",
+      "type": "object",
+      "properties": {
+        "content": { "type": "string", "description": "The text content of the confession." },
+        "category": { "type": "string", "enum": ["Crushes", "Rants", "Tea", "Memes", "Academic", "Other"], "description": "The category of the confession." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the confession was posted." },
+        "reactions": {
+          "type": "object",
+          "properties": {
+            "heart": { "type": "number" },
+            "thumbsUp": { "type": "number" },
+            "laugh": { "type": "number" },
+            "wow": { "type": "number" }
+          }
+        },
+        "reportCount": { "type": "number", "description": "Number of times reported." },
+        "status": { "type": "string", "enum": ["approved", "pending", "flagged"], "description": "Moderation status." },
+        "commentCount": { "type": "number", "description": "Total number of comments." },
+        "imageUrl": { "type": "string", "description": "Optional attached image URL." }
+      },
+      "required": ["content", "category", "timestamp", "status"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "An anonymous comment on a confession.",
+      "type": "object",
+      "properties": {
+        "confessionId": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "parentId": { "type": "string", "description": "ID of the parent comment if this is a reply." }
+      },
+      "required": ["confessionId", "content", "timestamp"]
+    }
+  },
+  "auth": {
+    "providers": ["anonymous"]
+  },
+  "firestore": {
+    "/confessions/{confessionId}": {
+      "schema": "Confession",
+      "description": "Collection of anonymous confessions."
+    },
+    "/confessions/{confessionId}/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Subcollection of comments for a specific confession."
+    }
+  }
+}

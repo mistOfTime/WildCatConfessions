@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "Spreadsheet calculation",
+      "imageUrl": "https://picsum.photos/seed/sheet/600/400",
+      "imageHint": "spreadsheet calculation"
+    },
+    {
+      "id": "2",
+      "description": "Library study session",
+      "imageUrl": "https://picsum.photos/seed/library/600/400",
+      "imageHint": "library study"
+    },
+    {
+      "id": "3",
+      "description": "Campus sunset",
+      "imageUrl": "https://picsum.photos/seed/campus/600/400",
+      "imageHint": "campus sunset"
+    },
+    {
+      "id": "4",
+      "description": "Coffee and books",
+      "imageUrl": "https://picsum.photos/seed/coffee/600/400",
+      "imageHint": "coffee books"
+    }
+  ]
+}

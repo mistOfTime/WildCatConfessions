@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#7c1d2e"/>
+
+  <!-- Subtle pattern circles -->
+  <circle cx="100" cy="100" r="200" fill="#6b1826" opacity="0.5"/>
+  <circle cx="1100" cy="530" r="250" fill="#6b1826" opacity="0.5"/>
+  <circle cx="600" cy="700" r="300" fill="#6b1826" opacity="0.3"/>
+
+  <!-- Logo circle -->
+  <circle cx="600" cy="220" r="70" fill="#f5a623"/>
+  <text x="600" y="240" font-family="Arial Black, sans-serif" font-size="64" font-weight="900" fill="#7c1d2e" text-anchor="middle">W</text>
+
+  <!-- Title -->
+  <text x="600" y="360" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="white" text-anchor="middle">Wildcat</text>
+  <text x="600" y="445" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="#f5a623" text-anchor="middle">Confessions</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.75)" text-anchor="middle">A space for everyone. Students, strangers, and everyone in between.</text>
+</svg>
