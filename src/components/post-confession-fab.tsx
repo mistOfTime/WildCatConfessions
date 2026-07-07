@@ -158,6 +158,18 @@ export default function PostConfessionFab() {
       return;
     }
 
+    // Rate limiting — prevent spam (1 post per 60 seconds)
+    const lastPost = localStorage.getItem(`last-post-${user?.uid}`);
+    if (lastPost && Date.now() - parseInt(lastPost) < 60000) {
+      const remaining = Math.ceil((60000 - (Date.now() - parseInt(lastPost))) / 1000);
+      toast({
+        title: "Slow down!",
+        description: `Please wait ${remaining} seconds before posting again.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     const confessionData = {
@@ -182,6 +194,8 @@ export default function PostConfessionFab() {
           title: "Confession submitted!",
           description: "Your post is now live and anonymous.",
         });
+        // Save last post timestamp for rate limiting
+        localStorage.setItem(`last-post-${user?.uid}`, Date.now().toString());
         
         // Reset state
         setContent('');
