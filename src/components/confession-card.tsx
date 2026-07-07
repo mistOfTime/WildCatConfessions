@@ -537,10 +537,10 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
                 <div key={i} className="flex items-center gap-3 py-2.5 px-2">
                   <div className="relative shrink-0">
                     <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 overflow-hidden">
-                      {r.photo
-                        ? <img src={r.photo} alt="avatar" className="w-full h-full object-cover object-top" />
+                      {r.photo && r.photo.length > 0
+                        ? <img src={r.photo} alt="avatar" className="w-full h-full object-cover object-top" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}/>
                         : <span className="w-full h-full flex items-center justify-center bg-primary text-white text-sm font-bold rounded-full">
-                            {r.name[0]?.toUpperCase()}
+                            {r.name[0]?.toUpperCase() ?? 'W'}
                           </span>
                       }
                     </div>
