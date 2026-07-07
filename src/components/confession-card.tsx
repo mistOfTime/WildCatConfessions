@@ -539,7 +539,9 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
                     <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 overflow-hidden">
                       {r.photo
                         ? <img src={r.photo} alt="avatar" className="w-full h-full object-cover object-top" />
-                        : <span>?</span>
+                        : <span className="w-full h-full flex items-center justify-center bg-primary text-white text-sm font-bold rounded-full">
+                            {r.name[0]?.toUpperCase()}
+                          </span>
                       }
                     </div>
                     <span className="absolute -bottom-0.5 -right-0.5 text-sm leading-none">{r.emoji}</span>
