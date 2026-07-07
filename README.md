@@ -1,6 +1,6 @@
 # 🐱 Wildcat Confessions
 
-A anonymous confession platform built for students, strangers, and everyone in between. Share your thoughts, spill the tea, and connect with your campus community — no names required.
+An anonymous confession platform built for students, strangers, and everyone in between. Share your thoughts, spill the tea, and connect with your campus community — no names required.
 
 **Live:** [wild-cat-confessions.vercel.app](https://wild-cat-confessions.vercel.app)
 
@@ -21,8 +21,9 @@ A anonymous confession platform built for students, strangers, and everyone in b
 - 📊 **Trending** — posts with 10+ reactions appear in the trending sidebar
 - 🛡️ **Moderation** — admin dashboard to review, approve, reject, or delete flagged posts
 - 🗑️ **Delete own posts** — users can delete their own confessions
-- 👤 **Profile customization** — change display name, avatar photo, and color
+- 👤 **Profile customization** — change display name, bio, course, avatar photo
 - 🌐 **Cross-device sync** — profile photo and name sync across all devices via Firestore
+- 🔐 **Security** — Firebase App Check + Firestore rules protect against bot attacks
 
 ---
 
@@ -31,7 +32,7 @@ A anonymous confession platform built for students, strangers, and everyone in b
 - **Framework:** Next.js 15 (App Router, Turbopack)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS + shadcn/ui
-- **Backend:** Firebase (Firestore, Authentication)
+- **Backend:** Firebase (Firestore, Authentication, App Check)
 - **Deployment:** Vercel
 - **Music API:** iTunes Search API (free, no key required)
 
@@ -54,42 +55,13 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
 NEXT_PUBLIC_FIREBASE_APP_ID=...
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=...
 
 # Run development server
 npm run dev
 ```
 
 Open [http://localhost:9002](http://localhost:9002) in your browser.
-
----
-
-## Firestore Rules
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /confessions/{confessionId} {
-      allow read, write: if request.auth != null;
-      match /comments/{commentId} {
-        allow read, write: if request.auth != null;
-      }
-      match /userReactions/{userId} {
-        allow read, write: if request.auth != null;
-      }
-    }
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      match /savedPosts/{postId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-    match /{path=**}/comments/{commentId} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
 
 ---
 
