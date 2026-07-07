@@ -22,7 +22,7 @@ export function initializeFirebase(): {
     try {
       initializeAppCheck(firebaseApp, {
         provider: new ReCaptchaV3Provider(
-          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LfY0kgtAAAAABhoYouWab0gnrpuN6VE_CgPJ6d7'
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeN6UgtAAAAAA2WpP90bMj16tP8E957bJSXq0vD'
         ),
         isTokenAutoRefreshEnabled: true,
       });
