@@ -28,11 +28,10 @@ export default function SyncPage() {
   const deleteSpam = async () => {
     if (!firestore) return;
     setDeleting(true);
-    setLog([]);
+    setLog(['🔍 Scanning posts...']);
     try {
       const confSnap = await getDocs(collection(firestore, 'confessions'));
-      let deleted = 0;
-      for (const confDoc of confSnap.docs) {
+      const spamDocs = confSnap.docs.filter(confDoc => {
         const data = confDoc.data();
         const content = (data.content ?? '').toLowerCase();
         const category = data.category ?? '';
@@ -41,14 +40,15 @@ export default function SyncPage() {
         const hasFakeCount = (data.reactions?.heart ?? 0) > 10000 ||
           (data.reactions?.thumbsUp ?? 0) > 10000 ||
           (data.commentCount ?? 0) > 10000;
+        return isSpamCategory || isSpamContent || hasFakeCount;
+      });
 
-        if (isSpamCategory || isSpamContent || hasFakeCount) {
-          await deleteDoc(doc(firestore, 'confessions', confDoc.id));
-          setLog(prev => [...prev, `🗑️ Deleted: "${(data.content ?? '').slice(0, 40)}..."`]);
-          deleted++;
-        }
-      }
-      setLog(prev => [...prev, `\n✅ Done. Deleted ${deleted} spam post(s).`]);
+      setLog([`🗑️ Found ${spamDocs.length} spam posts. Deleting in parallel...`]);
+
+      // Delete all in parallel — much faster
+      await Promise.all(spamDocs.map(confDoc => deleteDoc(doc(firestore, 'confessions', confDoc.id))));
+
+      setLog([`✅ Done. Deleted ${spamDocs.length} spam post(s). Refresh the feed to confirm.`]);
     } catch (e: any) {
       setLog(prev => [...prev, `❌ Error: ${e.message}`]);
     } finally {
