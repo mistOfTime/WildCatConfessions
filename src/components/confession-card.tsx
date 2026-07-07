@@ -17,7 +17,7 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useFirestore, useUser } from '@/firebase';
-import { doc, updateDoc, setDoc, deleteDoc, getDoc, runTransaction } from 'firebase/firestore';
+import { doc, updateDoc, setDoc, deleteDoc, getDoc, runTransaction, getDocs, collection } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 
 interface ConfessionCardProps {
@@ -168,9 +168,10 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
   const { user } = useUser();
   const { toast } = useToast();
 
-  // Load this user's existing reaction from Firestore
+  // Load this user's existing reaction + live counts from Firestore
   useEffect(() => {
     if (!firestore || !user) return;
+    // Load user's reaction
     const reactionRef = doc(firestore, 'confessions', confession.id, 'userReactions', user.uid);
     getDoc(reactionRef).then(snap => {
       if (snap.exists()) setReactedType(snap.data().type as keyof typeof reactions);
@@ -178,6 +179,12 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
     // Load saved state
     const saveRef = doc(firestore, 'users', user.uid, 'savedPosts', confession.id);
     getDoc(saveRef).then(snap => setSaved(snap.exists()));
+    // Load live reaction counts from Firestore (so they don't reset on remount)
+    getDoc(doc(firestore, 'confessions', confession.id)).then(snap => {
+      if (snap.exists() && snap.data().reactions) {
+        setReactions({ sad: 0, ...snap.data().reactions });
+      }
+    });
   }, [firestore, user]);
 
   // Close reaction popup when clicking outside
@@ -294,7 +301,6 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
 
   const handleViewReactors = async () => {
     if (!firestore) return;
-    const { getDocs, collection, doc, getDoc } = await import('firebase/firestore');
     const snap = await getDocs(collection(firestore, 'confessions', confession.id, 'userReactions'));
     const list = await Promise.all(snap.docs.map(async d => {
       const uid = d.id;
@@ -306,7 +312,6 @@ export default function ConfessionCard({ confession }: ConfessionCardProps) {
       let name = data.authorName ?? wildcatName;
       let photo = data.authorPhoto ?? null;
       const isAdmin = data.isAdmin ?? false;
-      // If no photo stored, fetch from user's Firestore profile for sync
       if (!photo) {
         try {
           const userSnap = await getDoc(doc(firestore, 'users', uid));
