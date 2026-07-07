@@ -3,18 +3,22 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
-import { initializeAppCheck, ReCaptchaV3Provider, AppCheck } from 'firebase/app-check';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { firebaseConfig } from './config';
+
+let appCheckInitialized = false;
 
 export function initializeFirebase(): {
   firebaseApp: FirebaseApp;
   firestore: Firestore;
   auth: Auth;
 } {
-  const firebaseApp = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+  const isNew = getApps().length === 0;
+  const firebaseApp = isNew ? initializeApp(firebaseConfig) : getApp();
 
-  // Initialize App Check with reCAPTCHA v3 (only once, client-side)
-  if (typeof window !== 'undefined' && getApps().length === 1) {
+  // Initialize App Check only once on client side
+  if (typeof window !== 'undefined' && isNew && !appCheckInitialized) {
+    appCheckInitialized = true;
     try {
       initializeAppCheck(firebaseApp, {
         provider: new ReCaptchaV3Provider(
@@ -22,8 +26,8 @@ export function initializeFirebase(): {
         ),
         isTokenAutoRefreshEnabled: true,
       });
-    } catch {
-      // Already initialized
+    } catch (e) {
+      console.warn('App Check init failed:', e);
     }
   }
 
